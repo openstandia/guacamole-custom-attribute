@@ -26,7 +26,7 @@
     <groupId>jp.openstandia.guacamole</groupId>
     <artifactId>guacamole-custom-attribute</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
 
     <name>guacamole-custom-attribute</name>
 
