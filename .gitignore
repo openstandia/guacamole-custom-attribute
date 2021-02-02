@@ -1,0 +1,7 @@
+src/main/resources/generated/
+target
+*.jar
+.idea
+*.iml
+.DS_Store
+

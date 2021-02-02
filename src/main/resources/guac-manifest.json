@@ -1,0 +1,12 @@
+{
+
+    "guacamoleVersion" : "1.3.0",
+
+    "name"      : "Custom Attribute Extension",
+    "namespace" : "customattr",
+
+    "authProviders" : [
+        "jp.openstandia.guacamole.auth.customattr.CustomAttributeProvider"
+    ]
+
+}
