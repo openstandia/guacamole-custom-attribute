@@ -22,15 +22,25 @@ package jp.openstandia.guacamole.auth.customattr.conf;
 import java.util.Collection;
 
 public class CustomAttributeDefinition {
+    public final String method;
     public final String form;
     public final String name;
     public final String type;
     public final Collection<String> options;
 
-    CustomAttributeDefinition(String form, String name, String type, Collection<String> options) {
+    CustomAttributeDefinition(String method, String form, String name, String type, Collection<String> options) {
+        this.method = method;
         this.form = form;
         this.name = name;
         this.type = type;
         this.options = options;
+    }
+
+    public boolean canRead() {
+        return method.toLowerCase().contains("r");
+    }
+
+    public boolean canWrite() {
+        return method.toLowerCase().contains("w");
     }
 }

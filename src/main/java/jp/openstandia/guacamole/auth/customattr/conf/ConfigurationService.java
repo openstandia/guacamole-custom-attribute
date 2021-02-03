@@ -51,7 +51,7 @@ public class ConfigurationService {
 
     /**
      * The list of the custom attribute definition.
-     * The format is [form-name][attr1-name]:[attr1-type]:([attr1-option]),[form-name][attr2-name]:[attr2-type]:([attr2-option]),...
+     * The format is [form-name][method][attr1-name]:[attr1-type]:([attr1-option]),[form-name][method][attr2-name]:[attr2-type]:([attr2-option]),...
      */
     private static final StringGuacamoleProperty CUSTOM_ATTRIBUTES =
             new StringGuacamoleProperty() {
@@ -77,7 +77,7 @@ public class ConfigurationService {
             return Collections.emptyList();
         }
 
-        logger.info("custom-attributes: {}", s);
+        logger.debug("custom-attributes: {}", s);
 
         if (s == null) {
             return Collections.emptyList();
@@ -86,10 +86,10 @@ public class ConfigurationService {
         String[] list = s.split(",");
         List<CustomAttributeDefinition> attrs = Arrays.stream(list)
                 .map(x -> x.split(":"))
-                .filter(x -> x.length == 3 || x.length == 4)
-                .map(x -> x.length == 3 ?
-                        new CustomAttributeDefinition(x[0], x[1], x[2], null)
-                        : new CustomAttributeDefinition(x[0], x[1], x[3], options(x[4])))
+                .filter(x -> x.length == 4 || x.length == 5)
+                .map(x -> x.length == 4 ?
+                        new CustomAttributeDefinition(x[0], x[1], x[2], x[3], null)
+                        : new CustomAttributeDefinition(x[0], x[1], x[2], x[3], options(x[4])))
                 .collect(Collectors.toList());
 
         return attrs;

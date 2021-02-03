@@ -19,10 +19,13 @@
 
 package jp.openstandia.guacamole.auth.customattr.user;
 
+import jp.openstandia.guacamole.auth.customattr.conf.ConfigurationService;
+import jp.openstandia.guacamole.auth.customattr.conf.CustomAttributeDefinition;
 import org.apache.guacamole.net.auth.DelegatingUser;
 import org.apache.guacamole.net.auth.User;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,12 +34,30 @@ import java.util.Map;
 public class CustomAttributeUser extends DelegatingUser {
 
     /**
+     * Requested method.
+     */
+    private final Method method;
+
+    /**
+     * Configuration service.
+     */
+    private final ConfigurationService confService;
+
+    enum Method {
+        READ,
+        WRITE,
+    }
+
+    /**
      * Wraps the given User object.
      *
-     * @param user The User object to wrap.
+     * @param confService
+     * @param user        The User object to wrap.
      */
-    public CustomAttributeUser(User user) {
+    public CustomAttributeUser(ConfigurationService confService, Method method, User user) {
         super(user);
+        this.confService = confService;
+        this.method = method;
     }
 
     /**
@@ -55,7 +76,21 @@ public class CustomAttributeUser extends DelegatingUser {
         Map<String, String> attributes =
                 new HashMap<String, String>(super.getAttributes());
 
-        // TODO control exposing attributes?
+        if (this.method == Method.READ) {
+            List<CustomAttributeDefinition> customAttributes = confService.getCustomAttributes();
+            for (CustomAttributeDefinition def : customAttributes) {
+                if (!def.canRead()) {
+                    attributes.remove(def.name);
+                }
+            }
+        } else if (this.method == Method.WRITE) {
+            List<CustomAttributeDefinition> customAttributes = confService.getCustomAttributes();
+            for (CustomAttributeDefinition def : customAttributes) {
+                if (!def.canWrite()) {
+                    attributes.remove(def.name);
+                }
+            }
+        }
 
         return attributes;
     }
@@ -66,7 +101,12 @@ public class CustomAttributeUser extends DelegatingUser {
         // Create independent, mutable copy of attributes
         attributes = new HashMap<String, String>(attributes);
 
-        // TODO control exposing attributes?
+        List<CustomAttributeDefinition> customAttributes = confService.getCustomAttributes();
+        for (CustomAttributeDefinition def : customAttributes) {
+            if (!def.canWrite()) {
+                attributes.remove(def.name);
+            }
+        }
 
         super.setAttributes(attributes);
     }

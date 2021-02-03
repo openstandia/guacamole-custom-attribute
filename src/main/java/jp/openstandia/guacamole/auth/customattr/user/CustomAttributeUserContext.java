@@ -57,7 +57,15 @@ public class CustomAttributeUserContext extends DelegatingUserContext {
 
             @Override
             protected User decorate(User object) {
-                return new CustomAttributeUser(object);
+                if (object instanceof CustomAttributeUser) {
+                    return object;
+                }
+                return new CustomAttributeUser(confService, CustomAttributeUser.Method.READ, object);
+            }
+
+            @Override
+            public void add(User object) throws GuacamoleException {
+                super.add(new CustomAttributeUser(confService, CustomAttributeUser.Method.WRITE, object));
             }
 
             @Override
